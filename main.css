@@ -1,0 +1,100 @@
+/*
+--color-dark2: #e0dad9;
+--color-dark1: #ede7e5;
+--color-background: #faf4f2;
+--color-text: #29242a;
+--color-accent1: #e14775;
+--color-accent2: #e16032;
+--color-accent3: #cc7a0a;
+--color-accent4: #269d69;
+--color-accent5: #1c8ca8;
+--color-accent6: #7058be;
+--color-dimmed1: #706b6e;
+--color-dimmed2: #918c8e;
+--color-dimmed3: #a59fa0;
+--color-dimmed4: #bfb9ba;
+--color-dimmed5: #d3cdcc;
+--color-panel: #fefaf9;
+--color-light: #fff;
+*/
+
+body {
+  background-color: #fefaf9;
+  color: #29242a;
+}
+
+.JSON-THING-chrome {
+  color: #918c8e;
+}
+.JSON-THING-comment {
+  color: #d3cdcc;
+  user-select: none;
+}
+.JSON-THING-string {
+  color: #1c8ca8;
+}
+.JSON-THING-string a {
+  color: #1c8ca8 !important;
+  text-decoration: underline;
+}
+.JSON-THING-string a:hover {
+  /*color: #7058be !important;*/
+  color: #269d69 !important;
+}
+.JSON-THING-boolean {
+  /*color: #269d69;*/
+  color: #e16032;
+}
+.JSON-THING-number {
+  color: #7058be;
+  /*color: #269d69;*/
+}
+.JSON-THING-unknown {
+  color: #e14775;
+}
+.JSON-THING-null {
+  color: #e16032;
+}
+.JSON-THING-key {
+  /*color: #269d69;*/
+}
+.JSON-THING-line {
+  padding: 3px 0;
+  white-space: nowrap;
+}
+.JSON-THING-caret-con {
+  position: relative;
+  user-select: none;
+}
+.JSON-THING-caret {
+  width: 22px;
+  height: 22px;
+  /*background-color: #CCC;*/
+  border-radius: 100px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  margin-top: -11px;
+  right: 100%;
+  margin-right: -2px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.JSON-THING-caret::before {
+  display: block;
+  content: '';
+  border: 10px solid transparent;
+  border-width: 10px 6px;
+  border-bottom: none;
+  border-top-color: #d3cdcc;
+  box-sizing: border-box;
+}
+.JSON-THING-caret.JSON-THING-collapsed::before {
+  transform: rotate(-90deg);
+  border-top-color: #29242a;  
+}
+.JSON-THING-caret:hover::before {
+  border-top-color: #29242a;
+}

@@ -4,7 +4,7 @@
   "version": "1.0",
   "manifest_version": 3,
   "action": {
-    "default_popup": "index.html",
+    "default_popup": "menu.html",
     "default_icon": "icon/icon-128.png"
   },
   "icons": {
@@ -19,5 +19,6 @@
       "css": ["main.css"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "permissions": ["storage"]
 }

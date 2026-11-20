@@ -1,8 +1,18 @@
 
 const cx = (className) => `JSON-THING-${className}`;
-const spaces = 4;
 let obj = null;
 const keyExpandedMap = {};
+let rootEl;
+
+const defaultSettings = {showArrayIndices: true, spaceCount: 4};
+const getSettings = async () => {
+  const storedSettings = await browser.storage.sync.get(['showArrayIndices', 'spaceCount']);
+  return {...defaultSettings, ...storedSettings};
+};
+let settings = {...defaultSettings};
+const loadSettings = async () => {
+  settings = await getSettings();
+};
 
 const getValType = (val) => {
   if (val === null)                      return 'NULL';
@@ -34,7 +44,7 @@ const escapeStr = (str) => {
 
 const makeLineEl = (level=0, html='', elCaret) => {
   const el = document.createElement('div');
-  const chars = new Array(level * spaces).fill('&nbsp;').join('');
+  const chars = new Array(level * settings.spaceCount).fill('&nbsp;').join('');
   el.innerHTML = `<span class="${cx('whitespace')}">${chars}</span>`;
   if (elCaret) {
     const elCaretCon = document.createElement('span');
@@ -93,10 +103,8 @@ const renderData = (path, domEl, val, isLast=true) => {
   const type = getValType(val);
   const keyHtml = (() => {
     if (key == null) return `<span class="${cx('comment')}">JSON: </span>`;
-    return (typeof key === 'number')
-      // ? `<span class="${cx('comment')}">[${key}]: </span>`
-      ? ``
-      : `<span class="${cx('key')}">"${escapeStr(key)}"</span><span class="${cx('chrome')}">: </span>`;
+    if (typeof key === 'number') return settings.showArrayIndices ? `<span class="${cx('comment')}">[${key}] </span>` : '';
+    return `<span class="${cx('key')}">"${escapeStr(key)}"</span><span class="${cx('chrome')}">: </span>`;
   })();
   const commaHtml = isLast ? '' : `<span class="${cx('chrome')}">,</span>`;
 
@@ -122,6 +130,7 @@ const renderData = (path, domEl, val, isLast=true) => {
       });
       const elLine2 = makeLineEl(level, `<span class="${cx('chrome')}">}</span>${commaHtml}`);
       domEl.appendChild(elLine2);
+      domEl.classList.add(cx('parent'));
     }
   } else if (type === 'ARRAY') {
     const isExpanded = getIsExpanded(path);
@@ -142,10 +151,11 @@ const renderData = (path, domEl, val, isLast=true) => {
       });
       const elLine2 = makeLineEl(level, `<span class="${cx('chrome')}">]</span>${commaHtml}`);
       domEl.appendChild(elLine2);
+      domEl.classList.add(cx('parent'));
     }
   } else if (type === 'STRING') {
     const html = isUrl(val)
-      ? `${keyHtml}<span class="${cx('string')}">"<a href="${val}" target="_blank">${escapeStr(val)}</a>"</span>${commaHtml}`
+      ? `${keyHtml}<span class="${cx('string')}">"<a href="${encodeURI(val)}">${escapeStr(val)}</a>"</span>${commaHtml}`
       : `${keyHtml}<span class="${cx('string')}">"${escapeStr(val)}"</span>${commaHtml}`;
     const elLine = makeLineEl(level, html);
     domEl.appendChild(elLine);
@@ -176,15 +186,29 @@ const getJsonData = () => {
   return obj;
 };
 
-const launch = () => {
+const rerender = async () => {
+  console.log('JSON Thing settings saved.');
+  await loadSettings();
+  if (rootEl && (obj !== undefined)) {
+    renderData([], rootEl, obj);
+  }
+};
+
+const launch = async () => {
   obj = getJsonData();
   if (obj == null) return;
 
-  const rootEl = makeNodeEl();
-  renderData([], rootEl, obj);
+  await loadSettings();
 
-  document.body.style.fontFamily = 'monospace';
-  document.body.style.padding = '36px';
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'settings-changed') rerender();
+  });
+
+  rootEl = makeNodeEl();
+  renderData([], rootEl, obj);
+  rootEl.classList.add(cx('root'));
+
+  document.body.classList.add(cx('body'));
   document.body.replaceChildren(rootEl);
 };
 

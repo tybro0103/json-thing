@@ -52,8 +52,12 @@
 .JSON-THING-string a:hover {
   color: #269d69 !important;
 }
-.JSON-THING-boolean, .JSON-THING-null {
+.JSON-THING-boolean {
   color: #cc7a0a;
+  font-weight: bold;
+}
+ .JSON-THING-null {
+  color: #e16032;
   font-weight: bold;
 }
 .JSON-THING-number {

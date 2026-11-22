@@ -90,8 +90,8 @@
 .JSON-THING-caret::before {
   display: block;
   content: '';
-  border: 10px solid transparent;
-  border-width: 10px 6px;
+  border: 1px solid transparent;
+  border-width: 8px 5px;
   border-bottom: none;
   border-top-color: #d3cdcc;
   box-sizing: border-box;
